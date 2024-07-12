@@ -37,6 +37,14 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+    def authenticate(self, email=None, password=None):
+        try:
+            user = self.get(email=email)
+            if user.check_password(password):
+                return user
+        except User.DoesNotExist:
+            return None
+
 class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     account_id = models.CharField(max_length=255, unique=True, default=generate_account_id)

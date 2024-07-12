@@ -1,15 +1,20 @@
 # enroll/utils.py
 
 def create_response(status, statuscode, message, details=None):
-    response = {
-        'status': status,
-        'message': message,
-        'details': details,
-    }
     if status == 'error':
-        response['error'] = {
+        error_message = message
+        if isinstance(details, dict):
+            error_details = list(details.values())[0][0] if details else message
+            error_message = error_details if error_details else message
+        return {
+            'status': status,
+            'message': error_message,
             'code': statuscode,
-            'message': message,
-            'details': details,
+            'details': details
         }
-    return response
+    else:
+        return {
+            'status': status,
+            'message': message,
+            'details': details
+        }
